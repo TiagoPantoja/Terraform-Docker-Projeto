@@ -1,0 +1,32 @@
+version: "2"
+
+networks:
+  prorenata:
+
+services:
+
+  rabbit:
+    image: "rabbitmq:3-management"
+    networks: 
+      prorenata: {}
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    labels:
+      NAME: "rabbitmq1"
+
+  celery:
+    image: "celery"
+    links:
+      - "rabbit"
+ 
+  myapp:
+    build: "./pyapp"
+    networks:
+      prorenata:
+        aliases:
+          - "myalias"
+    ports:
+      - "8080:80"
+    links: 
+      - "rabbit" 
